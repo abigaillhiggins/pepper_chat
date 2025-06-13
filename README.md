@@ -5,7 +5,8 @@ This project implements an interactive voice-based conversational agent using La
 ## Features
 
 - Real-time speech-to-text using Vosk
-- Natural text-to-speech using ElevenLabs
+- Natural, expressive text-to-speech using ElevenLabs (emotion-aware)
+- LLM-based emotion detection for each sentence
 - Conversational memory using LangChain
 - Web search capabilities using DuckDuckGo
 - Interactive voice-based conversation
@@ -23,16 +24,28 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Create a .env file:
+3. Install ffmpeg (includes ffplay, required for TTS playback):
+- **macOS:**
+  ```bash
+  brew install ffmpeg
+  ```
+- **Linux (Debian/Ubuntu):**
+  ```bash
+  sudo apt update && sudo apt install ffmpeg
+  ```
+- **Other Linux distros:**
+  Use your package manager to install `ffmpeg`.
+
+4. Create a .env file:
 ```bash
 cp .env.template .env
 ```
 
-4. Add your API keys to the .env file:
+5. Add your API keys to the .env file:
 - OPENAI_API_KEY: Your OpenAI API key
 - ELEVENLABS_API_KEY: Your ElevenLabs API key
 
-5. Download Vosk model:
+6. Download Vosk model:
 ```bash
 # Download the small model for English
 wget https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
@@ -51,8 +64,9 @@ The system will:
 2. Convert speech to text using Vosk
 3. Process the text through the LangChain agent
 4. Generate a response
-5. Convert the response to speech using ElevenLabs
-6. Play the response through your speakers
+5. Detect the emotion of each sentence in the response using an LLM
+6. Convert each sentence to expressive speech using ElevenLabs, matching the detected emotion
+7. Play the expressive response through your speakers
 
 ## Requirements
 
