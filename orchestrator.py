@@ -65,6 +65,20 @@ class Orchestrator:
                 search_response = self.search_agent.get_response(user_input)
                 # Remove "Based on search results:" prefix if present
                 response = search_response.replace("Based on search results:", "").strip()
+                
+                # Format the response based on the query type
+                if "weather" in user_input.lower():
+                    # Extract just the temperature and conditions
+                    parts = response.split(".")
+                    response = parts[0] if parts else response
+                elif "time" in user_input.lower():
+                    # Extract just the current time
+                    parts = response.split(".")
+                    response = parts[0] if parts else response
+                elif "population" in user_input.lower():
+                    # Format population response
+                    response = f"The population of {user_input.split('of')[-1].strip()} is {response}"
+                
                 if not response:
                     response = "I'm sorry, I couldn't find that information. Could you please try rephrasing your question?"
             # Default to Pepper's personality for everything else
