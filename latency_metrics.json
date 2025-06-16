@@ -1,0 +1,2 @@
+{"stt_latency_ms": 578.57, "main_response_latency_ms": 3902.32, "emotion_analysis_latency_ms": 707.35, "http_post_latency_ms": 27.83, "tts_latency_ms": 0.14, "total_latency_ms": 17596.7}
+{"stt_latency_ms": 663.75, "main_response_latency_ms": 4464.46, "emotion_analysis_latency_ms": 1006.97, "http_post_latency_ms": 28.21, "tts_latency_ms": 0.08, "total_latency_ms": 19825.95, "pre_processing_time_ms": 0.07, "post_processing_time_ms": 0.0, "sentence_splitting_time_ms": 0.18, "audio_playback_time_ms": 9700.8}

@@ -77,4 +77,48 @@ The system will:
 
 ## Note
 
-Make sure your microphone is properly configured and working before running the script. The system will automatically detect and use your default microphone. 
+Make sure your microphone is properly configured and working before running the script. The system will automatically detect and use your default microphone.
+
+# Pepper Orchestrator
+
+This project implements an orchestrator for Pepper, a sweet and caring humanoid robot assistant. The orchestrator manages various specialized agents, including a conversational LLM agent, a web search tool agent, an emotion classifier agent, and a TTS agent.
+
+## Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Set up environment variables:**
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key
+   ```
+
+## Running the Orchestrator
+
+To run the orchestrator, execute the following command:
+```bash
+python orchestrator.py
+```
+
+This will start Pepper in listening mode. Press Enter to start speaking, then press Enter again to stop. Type 'quit' to exit.
+
+## Project Structure
+
+- `orchestrator.py`: Main orchestrator script.
+- `agents/`: Contains specialized agent implementations.
+- `utils/`: Utility functions and helpers.
+- `dev/`: Development-related files and scripts.
+
+## Additional Information
+
+For more details on the implementation, refer to the comments in the code and the documentation provided in the repository. 

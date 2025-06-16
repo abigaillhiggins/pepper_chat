@@ -40,7 +40,7 @@ def main():
         user_input = input("\nYou: ")
         if user_input.lower() == 'quit':
             break
-            
+        
         # Convert response to speech
         text_to_speech(user_input)
 

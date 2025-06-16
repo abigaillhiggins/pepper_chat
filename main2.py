@@ -24,7 +24,7 @@ client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
 
 # Initialize LangChain components
-llm = ChatOpenAI(temperature=0.7, model_name="gpt-3.5-turbo")
+llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o")
 search = DuckDuckGoSearchRun()
 
 # Define tools
@@ -55,7 +55,7 @@ main_agent = initialize_agent(
 )
 
 # Initialize analysis agent for condensing search results
-analysis_llm = ChatOpenAI(temperature=0.3, model_name="gpt-3.5-turbo")
+analysis_llm = ChatOpenAI(temperature=0.3, model_name="gpt-4o")
 analysis_memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 analysis_agent = initialize_agent(
     [],
