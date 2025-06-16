@@ -56,7 +56,7 @@ unzip vosk-model-small-en-us-0.15.zip
 
 Run the main script:
 ```bash
-python main2.py
+python orchestrator.py
 ```
 
 The system will:
