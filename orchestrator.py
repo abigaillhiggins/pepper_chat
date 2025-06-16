@@ -60,27 +60,35 @@ class Orchestrator:
             # If it's a conversational query, use Pepper's personality directly
             if any(keyword in user_input.lower() for keyword in conversational_keywords):
                 response = self.pepper_agent.get_response(user_input)
-            # For factual queries, use the search agent and format the response
+            # For factual queries, try to use search agent but fall back to Pepper's personality if no internet
             elif any(keyword in user_input.lower() for keyword in ["weather", "news", "current", "latest", "who", "what", "when", "where", "why", "how"]):
-                search_response = self.search_agent.get_response(user_input)
-                # Remove "Based on search results:" prefix if present
-                response = search_response.replace("Based on search results:", "").strip()
-                
-                # Format the response based on the query type
-                if "weather" in user_input.lower():
-                    # Extract just the temperature and conditions
-                    parts = response.split(".")
-                    response = parts[0] if parts else response
-                elif "time" in user_input.lower():
-                    # Extract just the current time
-                    parts = response.split(".")
-                    response = parts[0] if parts else response
-                elif "population" in user_input.lower():
-                    # Format population response
-                    response = f"The population of {user_input.split('of')[-1].strip()} is {response}"
-                
-                if not response:
-                    response = "I'm sorry, I couldn't find that information. Could you please try rephrasing your question?"
+                try:
+                    search_response = self.search_agent.get_response(user_input)
+                    # Remove "Based on search results:" prefix if present
+                    response = search_response.replace("Based on search results:", "").strip()
+                    
+                    # Format the response based on the query type
+                    if "weather" in user_input.lower():
+                        # Extract just the temperature and conditions
+                        parts = response.split(".")
+                        response = parts[0] if parts else response
+                    elif "time" in user_input.lower():
+                        # Extract just the current time
+                        parts = response.split(".")
+                        response = parts[0] if parts else response
+                    elif "population" in user_input.lower():
+                        # Format population response
+                        response = f"The population of {user_input.split('of')[-1].strip()} is {response}"
+                    
+                    if not response:
+                        raise Exception("Empty search response")
+                except Exception as e:
+                    # Fall back to Pepper's personality if search fails
+                    print(f"Search failed: {str(e)}. Falling back to conversational response.")
+                    response = self.pepper_agent.get_response(
+                        f"I notice you're asking about {user_input}. While I can't access current information right now, "
+                        f"I'd be happy to chat about this topic from my perspective. What would you like to know?"
+                    )
             # Default to Pepper's personality for everything else
             else:
                 response = self.pepper_agent.get_response(user_input)
