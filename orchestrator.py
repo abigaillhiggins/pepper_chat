@@ -56,31 +56,40 @@ class Orchestrator:
             "make me laugh", "something interesting", "something exciting"
         ]
         
-        # If it's a conversational query, use Pepper's personality directly
-        if any(keyword in user_input.lower() for keyword in conversational_keywords):
-            response = self.pepper_agent.get_response(user_input)
-        # For factual queries, use the search agent
-        elif any(keyword in user_input.lower() for keyword in ["weather", "news", "current", "latest", "who", "what", "when", "where", "why", "how"]):
-            response = self.search_agent.get_response(user_input)
-        # Default to Pepper's personality for everything else
-        else:
-            response = self.pepper_agent.get_response(user_input)
-        
-        llm_time = (time.time() - start_time) * 1000
-        
-        # Process the response
-        sentences, tts_timings, total_tts_time = self.process_response(response)
-        
-        # Print profiling summary
-        print("\n--- Profiling Summary ---")
-        print(f"LLM/Agent response: {llm_time:.2f} ms")
-        print(f"TTS (total): {total_tts_time:.2f} ms")
-        for sentence, tts_time in tts_timings:
-            print(f"  TTS for: '{sentence[:30]}...' -> {tts_time:.2f} ms")
-        print(f"TOTAL time: {llm_time + total_tts_time:.2f} ms")
-        print("-------------------------\n")
-        
-        return response
+        try:
+            # If it's a conversational query, use Pepper's personality directly
+            if any(keyword in user_input.lower() for keyword in conversational_keywords):
+                response = self.pepper_agent.get_response(user_input)
+            # For factual queries, use the search agent and format the response
+            elif any(keyword in user_input.lower() for keyword in ["weather", "news", "current", "latest", "who", "what", "when", "where", "why", "how"]):
+                search_response = self.search_agent.get_response(user_input)
+                # Remove "Based on search results:" prefix if present
+                response = search_response.replace("Based on search results:", "").strip()
+                if not response:
+                    response = "I'm sorry, I couldn't find that information. Could you please try rephrasing your question?"
+            # Default to Pepper's personality for everything else
+            else:
+                response = self.pepper_agent.get_response(user_input)
+            
+            llm_time = (time.time() - start_time) * 1000
+            
+            # Process the response
+            sentences, tts_timings, total_tts_time = self.process_response(response)
+            
+            # Print profiling summary
+            print("\n--- Profiling Summary ---")
+            print(f"LLM/Agent response: {llm_time:.2f} ms")
+            print(f"TTS (total): {total_tts_time:.2f} ms")
+            for sentence, tts_time in tts_timings:
+                print(f"  TTS for: '{sentence[:30]}...' -> {tts_time:.2f} ms")
+            print(f"TOTAL time: {llm_time + total_tts_time:.2f} ms")
+            print("-------------------------\n")
+            
+            return response
+            
+        except Exception as e:
+            print(f"Error in handle_input: {str(e)}")
+            return "I apologize, but I encountered an error. Could you please try rephrasing your question?"
 
 def main():
     print("Welcome to Pepper, your AI Assistant with Speech Recognition and Emotion Labeling!")

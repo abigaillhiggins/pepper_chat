@@ -20,7 +20,6 @@ def test_orchestrator():
         return
     
     # Initialize orchestrator
-    print("Initializing Orchestrator...")
     orchestrator = Orchestrator()
     
     # Test cases
@@ -29,11 +28,15 @@ def test_orchestrator():
         "Tell me a joke",
         "How are you doing today?",
         "What's your favorite color?",
+        "What do you like to do for fun?",
+        "Can you tell me about yourself?",
         
         # Factual queries
         "What's the current weather in New York?",
         "Who won the last World Cup?",
-        "What's the latest news about AI?"
+        "What's the latest news about AI?",
+        "What's the time in Tokyo?",
+        "What's the population of London?"
     ]
     
     print("\nTesting Orchestrator with various queries...")
