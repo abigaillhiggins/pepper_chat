@@ -75,7 +75,7 @@ Orchestrator4 is a sophisticated multi-agent conversational AI system designed f
 - Response caching and character limit enforcement (200 chars)
 
 **🔍 SearchAgent3** - Advanced search with custom API
-- Custom search API integration (192.168.194.33:8060)
+- Custom search API integration (contact me for details)
 - Rate limiting, caching, and specialized formatting
 - Error handling with fallback to SearchAgent
 
