@@ -341,7 +341,7 @@ The test suite verifies:
 - Pepper robot hardware (for TTS output and movement execution)
 - Internet connection for API access
 - Network access to Pepper TTS endpoint (10.0.0.244:5000)
-- Network access to custom search API (192.168.194.33:8060)
+- Network access to custom search API 
 
 ## Configuration
 
@@ -375,7 +375,7 @@ The test suite verifies:
    - Check firewall settings
 
 3. **Search Not Working**
-   - Verify network connectivity to search API (192.168.194.33:8060)
+   - Verify network connectivity to search API 
    - Check API rate limiting
    - Ensure OpenAI API key is valid
 
