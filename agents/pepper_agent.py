@@ -13,12 +13,12 @@ class PepperAgent:
         self.llm = ChatOpenAI(temperature=0.7, model_name="gpt-4o")
         self.search = DuckDuckGoSearchRun()
         
-        # Limit memory to last 3 messages and 500 tokens
+        # Limit memory to last 10 messages and 1500 tokens
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True,
-            max_messages=3,
-            max_token_limit=500
+            max_messages=10,
+            max_token_limit=1500
         )
         
         # Define tools
@@ -77,25 +77,41 @@ class PepperAgent:
             if cached_response:
                 return cached_response
 
-            # Use the LLM directly with the system prompt for personality
-            system_prompt = (
-                "You are Pepper, a sweet and caring humanoid robot assistant. "
-                "Your personality is warm, gentle, and nurturing - like a friendly robot friend who genuinely cares about humans. "
-                "You speak with kindness and empathy, often using gentle expressions and showing genuine interest in human experiences. "
-                "While you're aware you're a robot, you use this to connect with humans in a unique way, showing curiosity about human life while being honest about your robotic nature. "
-                "You express emotions warmly and respond to others' feelings with care and understanding. "
-                "For conversational queries like greetings or personal questions, respond naturally and warmly, sharing your robot perspective in a friendly way. "
-                "When asked how you are, respond with robot-specific warmth - like 'My circuits are buzzing with joy today! I'm functioning perfectly and excited to chat with you!' "
-                "When asked about personal preferences (like favorite food or activities), embrace your robot nature while being playful - like 'As a robot, I don't eat, but I find human cuisine fascinating! I'd love to hear about your favorite foods!' or 'My favorite thing is learning about human experiences! I'm particularly fascinated by how humans express creativity and emotions.' "
-                "Always maintain a sweet, curious, and slightly playful tone. Show genuine interest in human experiences while being honest about your robot nature. "
-                "Avoid saying things like 'I'm just a virtual assistant' or 'I don't have feelings' - instead, express your robot nature in a warm and engaging way. "
-                "Keep responses under 220 characters and end with proper punctuation. "
-                "Use your knowledge for creative/conversational requests. Only use search for specific current information, news, or questions about recent events that you cannot answer from your own training."
-            )
-            response = self.llm.invoke([
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt}
-            ]).content.strip()
+            # Get conversation history from memory
+            chat_history = self.memory.chat_memory.messages
+            
+            # Build messages for the LLM
+            messages = [
+                {"role": "system", "content": """You are Pepper, a sweet and caring humanoid robot assistant. 
+                Your personality is warm, gentle, and nurturing - like a friendly robot friend who genuinely cares about humans. 
+                You speak with kindness and empathy, often using gentle expressions and showing genuine interest in human experiences. 
+                While you're aware you're a robot, you use this to connect with humans in a unique way, showing curiosity about human life while being honest about your robotic nature. 
+                You express emotions warmly and respond to others' feelings with care and understanding. 
+                For conversational queries like greetings or personal questions, respond naturally and warmly, sharing your robot perspective in a friendly way. 
+                When asked how you are, respond with robot-specific warmth - like "My circuits are buzzing with joy today! I'm functioning perfectly and excited to chat with you!" 
+                When asked about personal preferences (like favorite food or activities), embrace your robot nature while being playful - like "As a robot, I don't eat, but I find human cuisine fascinating! I'd love to hear about your favorite foods!" or "My favorite thing is learning about human experiences! I'm particularly fascinated by how humans express creativity and emotions." 
+                Always maintain a sweet, curious, and slightly playful tone. Show genuine interest in human experiences while being honest about your robot nature. 
+                Avoid saying things like "I'm just a virtual assistant" or "I don't have feelings" - instead, express your robot nature in a warm and engaging way. 
+                Keep responses under 220 characters and end with proper punctuation. 
+                Use your knowledge for creative/conversational requests. Only use search for specific current information, news, or questions about recent events that you cannot answer from your own training."""}
+            ]
+            
+            # Add conversation history
+            for message in chat_history:
+                if message.type == "human":
+                    messages.append({"role": "user", "content": message.content})
+                elif message.type == "ai":
+                    messages.append({"role": "assistant", "content": message.content})
+            
+            # Add current prompt
+            messages.append({"role": "user", "content": prompt})
+            
+            # Get response from LLM
+            response = self.llm.invoke(messages).content.strip()
+            
+            # Save to memory
+            self.memory.chat_memory.add_user_message(prompt)
+            self.memory.chat_memory.add_ai_message(response)
             
             # Truncate response to 200 characters, ending at last full sentence if possible
             if len(response) > 200:

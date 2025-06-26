@@ -1,0 +1,50 @@
+# SearXNG Search Agent Configuration
+
+# SearXNG Instance Configuration
+searxng:
+  base_url: "http://localhost:8060"  # Local SearXNG instance
+  api_key: ""  # Optional API key if your instance requires authentication
+  timeout: 30  # Request timeout in seconds
+  max_retries: 3  # Maximum number of retry attempts
+  retry_delay: 1  # Delay between retries in seconds
+
+# Search Parameters
+search:
+  default_engines: ["google", "bing", "duckduckgo"]  # Preferred search engines
+  categories: ["general", "images", "videos", "news", "science", "maps"]
+  max_results: 10  # Maximum number of results to return
+  language: "en"  # Default language for searches
+  time_range: "day"  # Time range: day, week, month, year
+  safesearch: 0  # Safe search level: 0=off, 1=moderate, 2=strict
+
+# Rate Limiting
+rate_limit:
+  enabled: true
+  requests_per_minute: 60
+  burst_limit: 10
+
+# Result Filtering
+filtering:
+  enable_deduplication: true
+  enable_source_validation: true
+  min_content_length: 50  # Minimum content length for valid results
+  block_domains: []  # List of domains to block
+  allow_domains: []  # List of domains to allow (empty = allow all)
+
+# Content Processing
+content:
+  enable_summarization: false  # Enable webpage content summarization
+  max_summary_length: 200  # Maximum summary length in characters
+  extract_metadata: true  # Extract metadata from search results
+
+# Error Handling
+error_handling:
+  log_errors: true
+  fallback_engines: ["google", "bing"]  # Fallback engines if primary fails
+  return_partial_results: true  # Return partial results on errors
+
+# Caching
+caching:
+  enabled: true
+  cache_ttl: 3600  # Cache time-to-live in seconds
+  max_cache_size: 1000  # Maximum number of cached results 

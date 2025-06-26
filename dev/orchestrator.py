@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os
+import re
 from agents.pepper_agent import PepperAgent
 from agents.search_agent import SearchAgent
 from agents.tts_agent import TTSAgent
@@ -16,6 +17,40 @@ class Orchestrator:
         self.pepper_agent = PepperAgent()
         self.search_agent = SearchAgent()
         self.tts_agent = TTSAgent()
+
+    def remove_emojis(self, text):
+        """Remove emojis and other problematic characters from text."""
+        # Remove emojis and other Unicode symbols that might cause TTS issues
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F"  # emoticons
+            "\U0001F300-\U0001F5FF"  # symbols & pictographs
+            "\U0001F680-\U0001F6FF"  # transport & map symbols
+            "\U0001F1E0-\U0001F1FF"  # flags (iOS)
+            "\U00002702-\U000027B0"  # dingbats
+            "\U000024C2-\U0001F251"  # enclosed characters
+            "]+", flags=re.UNICODE
+        )
+        return emoji_pattern.sub('', text)
+
+    def should_skip_tts(self, sentence):
+        """Check if a sentence should be skipped for TTS processing."""
+        # Remove emojis for checking
+        clean_sentence = self.remove_emojis(sentence).strip()
+        
+        # Skip if sentence is empty after removing emojis
+        if not clean_sentence:
+            return True
+        
+        # Skip if sentence is only punctuation or whitespace
+        if clean_sentence.isspace() or clean_sentence in ['', '.', '!', '?', '...']:
+            return True
+        
+        # Skip if sentence is too short (likely just an emoji)
+        if len(clean_sentence) < 2:
+            return True
+        
+        return False
 
     def classify_request_type(self, prompt):
         """Classify if the request is creative/conversational or factual."""
@@ -35,11 +70,21 @@ class Orchestrator:
         total_tts_time = 0
 
         for sentence in sentences:
-            start_time = time.time()
-            self.tts_agent.speak(sentence)  # Removed emotion parameter
-            tts_time = (time.time() - start_time) * 1000
-            tts_timings.append((sentence, tts_time))
-            total_tts_time += tts_time
+            # Skip TTS for emoji-only or problematic sentences
+            if self.should_skip_tts(sentence):
+                print(f"Skipping TTS for emoji/problematic sentence: '{sentence}'")
+                continue
+            
+            # Clean the sentence for TTS (remove emojis but keep the text)
+            clean_sentence = self.remove_emojis(sentence).strip()
+            
+            # Only process if we have meaningful text
+            if clean_sentence:
+                start_time = time.time()
+                self.tts_agent.speak(clean_sentence)  # Use cleaned sentence for TTS
+                tts_time = (time.time() - start_time) * 1000
+                tts_timings.append((sentence, tts_time))  # Keep original for display
+                total_tts_time += tts_time
 
         return sentences, tts_timings, total_tts_time
 
@@ -78,7 +123,9 @@ class Orchestrator:
                         response = parts[0] if parts else response
                     elif "population" in user_input.lower():
                         # Format population response
-                        response = f"The population of {user_input.split('of')[-1].strip()} is {response}"
+                        original_response = response
+                        location = user_input.split('of')[-1].strip() if 'of' in user_input else "the requested location"
+                        response = f"The population of {location} is {original_response}"
                     
                     if not response:
                         raise Exception("Empty search response")
