@@ -6,7 +6,7 @@ This project implements a comprehensive system for Pepper, a humanoid robot assi
 
 ### Orchestrator4 - Multi-Agent Conversational AI System
 
-Orchestrator4 is a sophisticated multi-agent conversational AI system designed for Pepper, a humanoid robot at the UC Collaborative Robotics Lab. The system integrates multiple specialized agents to handle different types of user queries with intelligent routing, fallback mechanisms, and Australian context awareness.
+Orchestrator4 is a multi-agent conversational AI system designed for Pepper, a humanoid robot. The system integrates multiple specialized agents to handle different types of user queries with intelligent routing, fallback mechanisms, and Australian context awareness.
 
 #### System Architecture Diagram
 
@@ -75,7 +75,7 @@ Orchestrator4 is a sophisticated multi-agent conversational AI system designed f
 - Response caching and character limit enforcement (200 chars)
 
 **🔍 SearchAgent3** - Advanced search with custom API
-- Custom search API integration (192.168.194.33:8060)
+- Custom search API integration (contact me for details)
 - Rate limiting, caching, and specialized formatting
 - Error handling with fallback to SearchAgent
 
@@ -341,7 +341,7 @@ The test suite verifies:
 - Pepper robot hardware (for TTS output and movement execution)
 - Internet connection for API access
 - Network access to Pepper TTS endpoint (10.0.0.244:5000)
-- Network access to custom search API (192.168.194.33:8060)
+- Network access to custom search API 
 
 ## Configuration
 
@@ -375,7 +375,7 @@ The test suite verifies:
    - Check firewall settings
 
 3. **Search Not Working**
-   - Verify network connectivity to search API (192.168.194.33:8060)
+   - Verify network connectivity to search API 
    - Check API rate limiting
    - Ensure OpenAI API key is valid
 
