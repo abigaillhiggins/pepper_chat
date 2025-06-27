@@ -6,7 +6,7 @@ This project implements a comprehensive system for Pepper, a humanoid robot assi
 
 ### Orchestrator4 - Multi-Agent Conversational AI System
 
-Orchestrator4 is a sophisticated multi-agent conversational AI system designed for Pepper, a humanoid robot at the UC Collaborative Robotics Lab. The system integrates multiple specialized agents to handle different types of user queries with intelligent routing, fallback mechanisms, and Australian context awareness.
+Orchestrator4 is a multi-agent conversational AI system designed for Pepper, a humanoid robot at the UC Collaborative Robotics Lab. The system integrates multiple specialized agents to handle different types of user queries with intelligent routing, fallback mechanisms, and Australian context awareness.
 
 #### System Architecture Diagram
 
